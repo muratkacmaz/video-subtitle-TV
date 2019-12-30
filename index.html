@@ -13,19 +13,29 @@
 		#controlBlock {
 			display:none;
 		}
+		button.focus,button:focus{
+			background-color:red;
+		}
 	</style>
 </head>
 <body onload="init();">
 	<div class="wrapper">
-		<button class="button"  onclick="play(1);this.style.visibility='hidden';"><span>Play </span></button>
+		<button class="button"  onclick="SetCustomData(1);this.style.visibility='hidden';"><span>Play </span></button>
 	</div>
 	<video type="video/mpeg4" id="test_video" src="https://videos.cdn.mozilla.net/brand/Mozilla_Firefox_Manifesto_v0.2_640.mp4"></video>
 <div class="overlay">
   		<p id="demo"></p>
 </div>
+<div id="controlBlock">
+	<button id="button_reload" onclick="window.location.reload()" href="#" autofocus>Reload</button>
+	<button id="button_play" onclick="play(1);">Play</button>
+	<button id="button_pause" onclick="pause(0);">Pause</button>
+	<button id="button_subt" onclick="subtOnOff();">Subt On/Off</button>
+</div>
 
 <script>
 "use strict";
+ var subtitleOn = true;
   function init(){
     var channelIndex = 0;
     video = document.getElementById("test_video");
@@ -37,17 +47,35 @@
       var sub = subtitleObjectArray[i];
       if(sub.startSecs<=t && sub.endSecs>t)
       {
-        document.getElementById("demo").innerHTML = sub.text;
+				if(subtitleOn == false){document.getElementById("demo").innerHTML = "  ";}
+        else {document.getElementById("demo").innerHTML = sub.text;}
         return;
       }
       else document.getElementById("demo").innerHTML = "  ";
     }
   }
 
-	function play(speed) {
+	function SetCustomData(speed) {
       document.getElementById('test_video').style.display='block';
 			video.play();
       setInterval(videoTime,10);
+			document.getElementById('controlBlock').style.display='block';
+	}
+	function play(speed) {
+			video.play();
+			setInterval(videoTime,10);
+			}
+	function pause() {
+			document.getElementById("test_video").pause();
+	}
+	function toogleFullScreen() {
+					video.setFullScreen(video.fullScreen?false:true);
+	}
+	function subtOnOff()
+	{
+		if(subtitleOn == true) subtitleOn = false;
+		else subtitleOn=true;
+		console.log("Subtitle On: "+subtitleOn );
 	}
 	class subtitleObject {
   		srtToSeconds(srt){
